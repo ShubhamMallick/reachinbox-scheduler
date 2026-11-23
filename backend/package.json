@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "worker": "tsx watch src/worker.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@bull-board/api": "^9.14.0",
+    "@bull-board/express": "^9.14.0",
+    "@elastic/elasticsearch": "^8.19.2",
+    "@prisma/client": "^6.0.0",
+    "bullmq": "^5.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "google-auth-library": "^11.3.4",
+    "ioredis": "^5.4.1",
+    "nodemailer": "^6.9.15",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/nodemailer": "^6.4.16",
+    "prisma": "^6.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
