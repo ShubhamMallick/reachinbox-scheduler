@@ -23,9 +23,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
+  const [theme, setTheme] = useState<"dark" | "light" | "yellow">(() => {
     const saved = localStorage.getItem("theme");
-    return saved === "light" ? "light" : "dark";
+    return saved === "light" || saved === "yellow" ? saved : "dark";
   });
 
   const refresh = useCallback(async () => {
@@ -146,10 +146,15 @@ export default function App() {
           </a>
           <button
             className="secondary theme-toggle"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={() => {
+              const themes = ["dark", "light", "yellow"] as const;
+              const currentIndex = themes.indexOf(theme);
+              const nextIndex = (currentIndex + 1) % themes.length;
+              setTheme(themes[nextIndex]);
+            }}
+            title={`Current theme: ${theme}. Click to switch.`}
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            {theme === "dark" ? "☀️" : theme === "light" ? "🌙" : "🟡"}
           </button>
           <button className="secondary" onClick={() => void handleLogout()}>
             Logout
