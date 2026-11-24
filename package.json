@@ -6,6 +6,9 @@
     "dev:backend": "npm run dev --workspace backend",
     "dev:worker": "npm run worker --workspace backend",
     "dev:frontend": "npm run dev --workspace frontend",
+    "build:backend": "npm run build --workspace backend",
+    "start:backend": "npm run start --workspace backend",
+    "start:worker": "npm run start:worker --workspace backend",
     "db:generate": "npm run db:generate --workspace backend",
     "db:migrate": "npm run db:migrate --workspace backend"
   }
