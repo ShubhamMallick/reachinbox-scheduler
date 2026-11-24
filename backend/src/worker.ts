@@ -7,6 +7,7 @@ import { sendEmail } from "./email-sender";
 import { reserveHourlySlot } from "./rate-limiter";
 import { notifyRateLimitHit } from "./services/slack";
 import { indexEmail } from "./services/elasticsearch";
+import express from "express";
 
 async function reconcileScheduledEmails() {
   const emails = await prisma.email.findMany({
@@ -142,6 +143,17 @@ worker.on("failed", (job, error) =>
 async function main() {
   await reconcileScheduledEmails();
   console.log(`Email worker running with concurrency ${config.concurrency}`);
+
+  // Add a simple HTTP server for health checks (required by Render)
+  const app = express();
+  app.get("/health", (_req, res) => {
+    res.json({ status: "ok", service: "worker" });
+  });
+
+  const port = process.env.PORT || 4001;
+  app.listen(port, () => {
+    console.log(`Worker health check server listening on port ${port}`);
+  });
 }
 
 main().catch((error) => {
