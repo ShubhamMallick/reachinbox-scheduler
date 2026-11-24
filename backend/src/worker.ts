@@ -98,13 +98,19 @@ const worker = new Worker<SendEmailJob>(
         email.fromEmail
       );
 
-      await prisma.email.update({
+      console.log(`Email sent successfully for ${email.id}`);
+
+      const updateResult = await prisma.email.update({
         where: { id: email.id },
         data: { status: "sent", sentAt: new Date() }
       });
 
+      console.log(`Updated email ${email.id} to sent:`, updateResult);
+
       await indexEmail(email.id);
     } catch (error) {
+      console.error(`Failed to send email ${email.id}:`, error);
+
       await prisma.email.update({
         where: { id: email.id },
         data: {

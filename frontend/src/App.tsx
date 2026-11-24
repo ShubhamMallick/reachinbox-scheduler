@@ -98,9 +98,14 @@ export default function App() {
           <p className="eyebrow">REACHINBOX</p>
           <h1>Email Scheduler</h1>
           <p>Sign in with Google to schedule and search your emails.</p>
-          <a className="google-button" href="/api/auth/google">
+          <button
+            className="google-button"
+            onClick={() => {
+              window.location.href = "/api/auth/google";
+            }}
+          >
             Continue with Google
-          </a>
+          </button>
         </section>
       </main>
     );
@@ -122,6 +127,14 @@ export default function App() {
             <strong>{user.name}</strong>
             <span>{user.email}</span>
           </div>
+          <a
+            className="secondary bull-board-link"
+            href="http://localhost:4000/admin/queues"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Bull Board
+          </a>
           <button className="secondary" onClick={() => void handleLogout()}>
             Logout
           </button>

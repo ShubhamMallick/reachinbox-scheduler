@@ -30,12 +30,50 @@ export function ComposeForm({ onScheduled }: { onScheduled: () => void }) {
     setBusy(true);
     setMessage("");
 
+    // Validate required fields
+    if (recipients.length === 0) {
+      setMessage("Please upload a file with email addresses.");
+      setBusy(false);
+      return;
+    }
+
+    if (!subject.trim()) {
+      setMessage("Please enter a subject.");
+      setBusy(false);
+      return;
+    }
+
+    if (!body.trim()) {
+      setMessage("Please enter a body.");
+      setBusy(false);
+      return;
+    }
+
+    if (!startAt) {
+      setMessage("Please select a start time.");
+      setBusy(false);
+      return;
+    }
+
+    const startDate = new Date(startAt);
+    if (isNaN(startDate.getTime())) {
+      setMessage("Invalid start time.");
+      setBusy(false);
+      return;
+    }
+
+    if (startDate.getTime() <= Date.now()) {
+      setMessage("Start time must be in the future.");
+      setBusy(false);
+      return;
+    }
+
     try {
       await scheduleEmails({
         recipients,
         subject,
         body,
-        startAt: new Date(startAt).toISOString(),
+        startAt: startDate.toISOString(),
         delayBetweenMs,
         senderKey,
         hourlyLimit,

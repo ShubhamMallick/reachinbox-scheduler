@@ -21,14 +21,17 @@ export function SlackSettings() {
 
     try {
       const current = await getSlackStatus();
+      console.log("Slack status:", current);
       setStatus(current);
 
       if (current.connected) {
         const result = await getSlackChannels();
+        console.log("Slack channels:", result);
         setChannels(result.channels);
         setSelected(result.selected ?? "");
       }
     } catch (error) {
+      console.error("Slack load error:", error);
       setMessage(error instanceof Error ? error.message : "Could not load Slack");
     } finally {
       setLoading(false);
@@ -78,9 +81,14 @@ export function SlackSettings() {
       </div>
 
       {!loading && !status?.connected && (
-        <a className="google-button slack-connect" href="/api/slack/connect">
+        <button
+          className="slack-connect"
+          onClick={() => {
+            window.location.href = "/api/slack/connect";
+          }}
+        >
           Connect Slack
-        </a>
+        </button>
       )}
 
       {!loading && status?.connected && (
@@ -89,9 +97,22 @@ export function SlackSettings() {
             Alert channel
             <select
               value={selected}
-              onChange={(event) => void handleChannelChange(event.target.value)}
+              onChange={(event) => {
+                console.log("Channel changed:", event.target.value);
+                void handleChannelChange(event.target.value);
+              }}
+              disabled={channels.length === 0}
+              style={{ 
+                pointerEvents: "auto", 
+                opacity: 1, 
+                display: "block",
+                position: "relative",
+                zIndex: 10
+              }}
             >
-              <option value="">Choose a channel</option>
+              <option value="">
+                {channels.length === 0 ? "No channels available" : "Choose a channel"}
+              </option>
               {channels.map((channel) => (
                 <option key={channel.id} value={channel.id}>
                   #{channel.name}
