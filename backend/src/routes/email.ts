@@ -7,6 +7,7 @@ import {
   indexEmail,
   searchEmails
 } from "../services/elasticsearch";
+import { Prisma, Email } from "@prisma/client";
 
 export const emailsRouter = Router();
 emailsRouter.use(requireAuth);
@@ -32,8 +33,8 @@ emailsRouter.post("/schedule", async (req, res, next) => {
       return res.status(400).json({ error: "startAt must be in the future" });
     }
 
-    const created = await prisma.$transaction(async (tx) => {
-      const records = [];
+    const created = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const records: Email[] = [];
 
       for (let i = 0; i < input.recipients.length; i++) {
         const scheduledAt = new Date(
@@ -61,7 +62,7 @@ emailsRouter.post("/schedule", async (req, res, next) => {
     });
 
     await Promise.all(
-      created.map((email) =>
+      created.map((email: Email) =>
         emailQueue.add(
           "send",
           { emailId: email.id },
@@ -77,7 +78,7 @@ emailsRouter.post("/schedule", async (req, res, next) => {
       )
     );
 
-    await Promise.all(created.map((email) => indexEmail(email.id)));
+    await Promise.all(created.map((email: Email) => indexEmail(email.id)));
 
     return res.status(201).json({ count: created.length, emails: created });
   } catch (error) {
