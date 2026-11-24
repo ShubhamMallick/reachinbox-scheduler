@@ -1,6 +1,6 @@
 # ReachInbox Scheduler
 
-A full-stack email scheduling app with delayed delivery, per-sender hourly limits, Slack alerts, email search, and a BullMQ queue dashboard.
+A full-stack email scheduling app with delayed delivery, per-sender hourly limits, Slack alerts, email search, BullMQ queue dashboard, and day/night theme support.
 
 ## Features
 
@@ -12,7 +12,9 @@ A full-stack email scheduling app with delayed delivery, per-sender hourly limit
 - Defer queued emails when a sender reaches its hourly limit
 - Send Slack alerts when an hourly limit is reached
 - Search email records through Elasticsearch
-- Inspect the BullMQ queue in Bull Board
+- Inspect the BullMQ queue in Bull Board (accessible from the dashboard header)
+- Dark/light theme toggle with persistent preference
+- Responsive design with animations and transitions
 
 ## Requirements
 

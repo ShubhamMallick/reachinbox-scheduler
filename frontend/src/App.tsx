@@ -23,6 +23,10 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const saved = localStorage.getItem("theme");
+    return saved === "light" ? "light" : "dark";
+  });
 
   const refresh = useCallback(async () => {
     if (!user) return;
@@ -49,6 +53,11 @@ export default function App() {
   useEffect(() => {
     if (user) void refresh();
   }, [user, refresh]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   async function handleLogout() {
     await logout();
@@ -135,6 +144,13 @@ export default function App() {
           >
             Bull Board
           </a>
+          <button
+            className="secondary theme-toggle"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
           <button className="secondary" onClick={() => void handleLogout()}>
             Logout
           </button>
