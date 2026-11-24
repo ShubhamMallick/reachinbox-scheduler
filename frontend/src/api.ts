@@ -1,6 +1,6 @@
 import type { EmailRecord } from "./types";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API = "https://reachinbox-scheduler-ajqn.onrender.com";
 
 export type CurrentUser = {
   id: string;

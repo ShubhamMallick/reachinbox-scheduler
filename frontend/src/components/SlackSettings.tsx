@@ -84,8 +84,7 @@ export function SlackSettings() {
         <button
           className="slack-connect"
           onClick={() => {
-            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-            window.location.href = `${apiUrl}/api/slack/connect`;
+            window.location.href = "https://reachinbox-scheduler-ajqn.onrender.com/api/slack/connect";
           }}
         >
           Connect Slack

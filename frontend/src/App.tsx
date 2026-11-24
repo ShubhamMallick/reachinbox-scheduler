@@ -110,8 +110,7 @@ export default function App() {
           <button
             className="google-button"
             onClick={() => {
-              const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-              window.location.href = `${apiUrl}/api/auth/google`;
+              window.location.href = "https://reachinbox-scheduler-ajqn.onrender.com/api/auth/google";
             }}
           >
             Continue with Google
@@ -139,7 +138,7 @@ export default function App() {
           </div>
           <a
             className="secondary bull-board-link"
-            href={`${import.meta.env.VITE_API_URL || "http://localhost:4000"}/admin/queues`}
+            href="https://reachinbox-scheduler-ajqn.onrender.com/admin/queues"
             target="_blank"
             rel="noopener noreferrer"
           >
