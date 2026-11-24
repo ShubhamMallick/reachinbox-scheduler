@@ -7,6 +7,7 @@
     "dev:worker": "npm run worker --workspace backend",
     "dev:frontend": "npm run dev --workspace frontend",
     "build:backend": "npm run build --workspace backend",
+    "prestart:backend": "npm run prestart --workspace backend",
     "start:backend": "npm run start --workspace backend",
     "start:worker": "npm run start:worker --workspace backend",
     "db:generate": "npm run db:generate --workspace backend",
