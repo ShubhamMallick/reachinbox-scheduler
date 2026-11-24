@@ -84,7 +84,8 @@ export function SlackSettings() {
         <button
           className="slack-connect"
           onClick={() => {
-            window.location.href = "/api/slack/connect";
+            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+            window.location.href = `${apiUrl}/api/slack/connect`;
           }}
         >
           Connect Slack

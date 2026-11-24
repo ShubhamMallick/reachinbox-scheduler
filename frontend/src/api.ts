@@ -1,6 +1,6 @@
 import type { EmailRecord } from "./types";
 
-const API = "/api";
+const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export type CurrentUser = {
   id: string;
@@ -43,15 +43,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export function getCurrentUser() {
-  return request<{ user: CurrentUser }>("/auth/me");
+  return request<{ user: CurrentUser }>("/api/auth/me");
 }
 
 export function logout() {
-  return request<{ ok: boolean }>("/auth/logout", { method: "POST" });
+  return request<{ ok: boolean }>("/api/auth/logout", { method: "POST" });
 }
 
 export function getEmails(status: "scheduled" | "sent") {
-  return request<EmailRecord[]>(`/emails?status=${status}`);
+  return request<EmailRecord[]>(`/api/emails?status=${status}`);
 }
 
 export function scheduleEmails(data: {
@@ -65,7 +65,7 @@ export function scheduleEmails(data: {
   fromName: string;
   fromEmail: string;
 }) {
-  return request<{ count: number }>("/emails/schedule", {
+  return request<{ count: number }>("/api/emails/schedule", {
     method: "POST",
     body: JSON.stringify(data)
   });
@@ -76,29 +76,29 @@ export function searchEmails(
   status: "scheduled" | "sent"
 ) {
   const params = new URLSearchParams({ q: query, status });
-  return request<EmailRecord[]>(`/emails/search?${params}`);
+  return request<EmailRecord[]>(`/api/emails/search?${params}`);
 }
 
 export function getSlackStatus() {
-  return request<SlackStatus>("/slack/status");
+  return request<SlackStatus>("/api/slack/status");
 }
 
 export function getSlackChannels() {
   return request<{
     channels: SlackChannel[];
     selected: string | null;
-  }>("/slack/channels");
+  }>("/api/slack/channels");
 }
 
 export function saveSlackChannel(channelId: string) {
-  return request<{ ok: boolean }>("/slack/channel", {
+  return request<{ ok: boolean }>("/api/slack/channel", {
     method: "POST",
     body: JSON.stringify({ channelId })
   });
 }
 
 export function disconnectSlack() {
-  return request<{ ok: boolean }>("/slack/disconnect", {
+  return request<{ ok: boolean }>("/api/slack/disconnect", {
     method: "POST"
   });
 }
