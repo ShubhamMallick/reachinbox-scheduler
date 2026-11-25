@@ -141,19 +141,22 @@ worker.on("failed", (job, error) =>
 );
 
 async function main() {
-  await reconcileScheduledEmails();
-  console.log(`Email worker running with concurrency ${config.concurrency}`);
-
-  // Add a simple HTTP server for health checks (required by Render)
+  // Start health check server first (required by Render)
   const app = express();
   app.get("/health", (_req, res) => {
     res.json({ status: "ok", service: "worker" });
   });
 
-  const port = process.env.PORT || 4001;
+  const port = parseInt(process.env.PORT || "4001", 10);
   app.listen(port, () => {
     console.log(`Worker health check server listening on port ${port}`);
   });
+
+  // Then start worker (wait for server to be ready)
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  await reconcileScheduledEmails();
+  console.log(`Email worker running with concurrency ${config.concurrency}`);
 }
 
 main().catch((error) => {
