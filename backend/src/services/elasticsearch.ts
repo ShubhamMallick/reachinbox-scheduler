@@ -53,6 +53,12 @@ export async function ensureEmailIndex(): Promise<void> {
 
 export async function indexEmail(emailId: string): Promise<void> {
   try {
+    // Skip Elasticsearch if it's not configured (local development or production without ES)
+    if (!config.elasticsearchUrl || config.elasticsearchUrl === "http://localhost:9200") {
+      console.log("[elasticsearch] Skipping indexing - Elasticsearch not configured");
+      return;
+    }
+    
     await ensureEmailIndex();
 
     const email = await prisma.email.findUnique({
@@ -89,6 +95,37 @@ export async function searchEmails(
   query: string,
   status: "scheduled" | "sent"
 ) {
+  // Skip Elasticsearch if it's not configured (local development or production without ES)
+  if (!config.elasticsearchUrl || config.elasticsearchUrl === "http://localhost:9200") {
+    console.log("[elasticsearch] Falling back to database search - Elasticsearch not configured");
+    
+    // Fallback to database search
+    const emails = await prisma.email.findMany({
+      where: {
+        userId,
+        status,
+        OR: query.trim() ? [
+          { recipient: { contains: query, mode: "insensitive" } },
+          { subject: { contains: query, mode: "insensitive" } },
+          { body: { contains: query, mode: "insensitive" } }
+        ] : undefined
+      },
+      orderBy: status === "sent" ? { sentAt: "desc" } : { scheduledAt: "desc" },
+      take: 100
+    });
+
+    return emails.map((email) => ({
+      id: email.id,
+      recipient: email.recipient,
+      subject: email.subject,
+      body: email.body,
+      scheduledAt: email.scheduledAt.toISOString(),
+      sentAt: email.sentAt?.toISOString() ?? null,
+      status: email.status,
+      error: email.error
+    }));
+  }
+
   await ensureEmailIndex();
 
   const result = await client.search<EmailDocument>({
