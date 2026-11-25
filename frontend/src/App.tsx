@@ -28,6 +28,17 @@ export default function App() {
     return saved === "light" || saved === "yellow" || saved === "red" || saved === "green" ? saved : "dark";
   });
 
+  // Extract session token from URL and store it
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionToken = urlParams.get("session");
+    if (sessionToken) {
+      localStorage.setItem("sessionToken", sessionToken);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const refresh = useCallback(async () => {
     if (!user) return;
 

@@ -2,6 +2,10 @@ import type { EmailRecord } from "./types";
 
 const API = "https://reachinbox-scheduler-ajqn.onrender.com";
 
+function getSessionToken() {
+  return localStorage.getItem("sessionToken") || "";
+}
+
 export type CurrentUser = {
   id: string;
   email: string;
@@ -24,7 +28,11 @@ export type SlackStatus = {
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API}${path}`, {
+  const sessionToken = getSessionToken();
+  const separator = path.includes("?") ? "&" : "?";
+  const fullPath = sessionToken ? `${path}${separator}session=${sessionToken}` : path;
+
+  const response = await fetch(`${API}${fullPath}`, {
     credentials: "include",
     ...init,
     headers: {
