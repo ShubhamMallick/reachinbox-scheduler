@@ -77,6 +77,17 @@ export async function requireAuth(
 ) {
   try {
     const userId = readSession(req.cookies?.[SESSION_COOKIE]);
+    
+    // Fallback: check for session token in URL parameter
+    if (!userId && req.query.session) {
+      const urlToken = req.query.session as string;
+      const fromUrl = readSession(urlToken);
+      if (fromUrl) {
+        req.userId = fromUrl;
+        return next();
+      }
+    }
+    
     if (!userId) return res.status(401).json({ error: "unauthenticated" });
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -153,8 +164,9 @@ authRouter.get("/google/callback", async (req, res, next) => {
       }
     });
 
-    res.cookie(SESSION_COOKIE, makeSession(user.id), cookieOptions(SESSION_AGE_MS));
-    return res.redirect(config.frontendUrl);
+    const sessionToken = makeSession(user.id);
+    res.cookie(SESSION_COOKIE, sessionToken, cookieOptions(SESSION_AGE_MS));
+    return res.redirect(`${config.frontendUrl}?session=${sessionToken}`);
   } catch (error) {
     return next(error);
   }
